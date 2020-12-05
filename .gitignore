@@ -14,3 +14,6 @@ devenv
 .DS_Store
 localbin
 nohup.out
+data/
+**/data/**
+data/**

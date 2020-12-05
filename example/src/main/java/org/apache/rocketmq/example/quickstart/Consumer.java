@@ -16,7 +16,9 @@
  */
 package org.apache.rocketmq.example.quickstart;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -32,6 +34,7 @@ public class Consumer {
 
     public static void main(String[] args) throws InterruptedException, MQClientException {
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
         /*
          * Instantiate with specified consumer group name.
          */
@@ -67,8 +70,8 @@ public class Consumer {
 
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
-                ConsumeConcurrentlyContext context) {
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                                                            ConsumeConcurrentlyContext context) {
+                System.out.printf(simpleDateFormat.format(System.currentTimeMillis()) + " [] " + "%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
         });
