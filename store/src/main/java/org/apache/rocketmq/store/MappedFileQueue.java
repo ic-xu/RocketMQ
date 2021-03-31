@@ -44,7 +44,7 @@ public class MappedFileQueue {
     //这里面每一个消息文件的大小，默认大小1G
     private final int mappedFileSize;
 
-    //文件的集合
+    //线程安全的文件的集合
     private final CopyOnWriteArrayList<MappedFile> mappedFiles = new CopyOnWriteArrayList<MappedFile>();
 
     //服务类

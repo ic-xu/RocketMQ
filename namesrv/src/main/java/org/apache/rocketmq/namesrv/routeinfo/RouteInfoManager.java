@@ -59,19 +59,21 @@ public class RouteInfoManager {
 
      **brokerAddrTable：**Broker基础信息，包括brokerName、所属集群名称、主备Broker地址
 
-     **clusterAddrTable：**Broker集群信息，存储集群中所有Broker名称
 
-     **brokerLiveTable：**Broker状态信息，NameServer每次收到心跳包是会替换该信息
-
-     **filterServerTable：**Broker上的FilterServer列表，用于类模式消息过滤。
      */
 
     //topic路由信息，用来做负载均衡
     private final HashMap<String/* topic */, List<QueueData>> topicQueueTable;
     //broker节点信息，用来做borker负载均衡
     private final HashMap<String/* brokerName */, BrokerData> brokerAddrTable;
+
+    /** **clusterAddrTable：**Broker集群信息，存储集群中所有Broker名称 */
     private final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;
+
+    /**   **brokerLiveTable：**Broker状态信息，NameServer每次收到心跳包是会替换该信息 */
     private final HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable;
+
+    /**  **filterServerTable：**Broker上的FilterServer列表，用于类模式消息过滤。 */
     private final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable;
 
     public RouteInfoManager() {

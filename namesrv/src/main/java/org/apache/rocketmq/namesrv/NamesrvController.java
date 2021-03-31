@@ -43,12 +43,17 @@ import org.apache.rocketmq.srvutil.FileWatchService;
 public class NamesrvController {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
+    //NameSrv配置类
     private final NamesrvConfig namesrvConfig;
 
+    //netty 的配置信息类
     private final NettyServerConfig nettyServerConfig;
 
+    //单列线程池，
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl(
             "NSScheduledThread"));
+
+    //
     private final KVConfigManager kvConfigManager;
     private final RouteInfoManager routeInfoManager;
 
@@ -86,13 +91,12 @@ public class NamesrvController {
 
         this.registerProcessor();
 
-        //创建一个定时的线程池，定时的去执行run() 方法，
         this.scheduledExecutorService.scheduleAtFixedRate(() ->
-                /*
-                 * 定时的扫描borker节点信息，剔除超时的borker节点
-                 */
+                /** 定时的扫描borker节点信息，剔除超时的borker节点, 每隔10  */
                 NamesrvController.this.routeInfoManager.scanNotActiveBroker(), 5, 10, TimeUnit.SECONDS);
 
+
+            /** //开启定时任务:每隔10min打印一次KV配置 */
         this.scheduledExecutorService.scheduleAtFixedRate(() -> NamesrvController.this.kvConfigManager.printAllPeriodically(), 1, 10, TimeUnit.MINUTES);
 
         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {

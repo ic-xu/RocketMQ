@@ -21,7 +21,7 @@ import org.apache.rocketmq.common.message.MessageQueue;
 public class PullRequest {
     private String consumerGroup;
     private MessageQueue messageQueue;
-    private ProcessQueue processQueue;
+    private ProcessQueue processQueue;//处理队列，它是messageQueue 在客户端的快照，一次拉去的32条消息就放在processQueue 中，
     private long nextOffset;
     private boolean lockedFirst = false;
 

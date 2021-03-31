@@ -22,6 +22,8 @@ public class Main {
 
         map.put(0, (byte) 'H');
 
+        map.force();
+
         file.close();
     }
 

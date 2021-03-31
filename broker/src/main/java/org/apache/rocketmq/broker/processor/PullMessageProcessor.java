@@ -227,6 +227,7 @@ public class PullMessageProcessor extends AsyncNettyRequestProcessor implements 
             return response;
         }
 
+        //构建消息过滤器
         MessageFilter messageFilter;
         if (this.brokerController.getBrokerConfig().isFilterSupportRetry()) {
             messageFilter = new ExpressionForRetryMessageFilter(subscriptionData, consumerFilterData,
@@ -236,6 +237,7 @@ public class PullMessageProcessor extends AsyncNettyRequestProcessor implements 
                 this.brokerController.getConsumerFilterManager());
         }
 
+        //或取消消息
         final GetMessageResult getMessageResult =
             this.brokerController.getMessageStore().getMessage(requestHeader.getConsumerGroup(), requestHeader.getTopic(),
                 requestHeader.getQueueId(), requestHeader.getQueueOffset(), requestHeader.getMaxMsgNums(), messageFilter);
@@ -461,6 +463,7 @@ public class PullMessageProcessor extends AsyncNettyRequestProcessor implements 
             response.setRemark("store getMessage return null");
         }
 
+        //存储拉去的进度
         boolean storeOffsetEnable = brokerAllowSuspend;
         storeOffsetEnable = storeOffsetEnable && hasCommitOffsetFlag;
         storeOffsetEnable = storeOffsetEnable
@@ -549,36 +552,33 @@ public class PullMessageProcessor extends AsyncNettyRequestProcessor implements 
 
     public void executeRequestWhenWakeup(final Channel channel,
         final RemotingCommand request) throws RemotingCommandException {
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final RemotingCommand response = PullMessageProcessor.this.processRequest(channel, request, false);
+        Runnable run = () -> {
+            try {
+                final RemotingCommand response = PullMessageProcessor.this.processRequest(channel, request, false);
 
-                    if (response != null) {
-                        response.setOpaque(request.getOpaque());
-                        response.markResponseType();
-                        try {
-                            channel.writeAndFlush(response).addListener(new ChannelFutureListener() {
-                                @Override
-                                public void operationComplete(ChannelFuture future) throws Exception {
-                                    if (!future.isSuccess()) {
-                                        log.error("processRequestWrapper response to {} failed",
-                                            future.channel().remoteAddress(), future.cause());
-                                        log.error(request.toString());
-                                        log.error(response.toString());
-                                    }
+                if (response != null) {
+                    response.setOpaque(request.getOpaque());
+                    response.markResponseType();
+                    try {
+                        channel.writeAndFlush(response).addListener(new ChannelFutureListener() {
+                            @Override
+                            public void operationComplete(ChannelFuture future) throws Exception {
+                                if (!future.isSuccess()) {
+                                    log.error("processRequestWrapper response to {} failed",
+                                        future.channel().remoteAddress(), future.cause());
+                                    log.error(request.toString());
+                                    log.error(response.toString());
                                 }
-                            });
-                        } catch (Throwable e) {
-                            log.error("processRequestWrapper process request over, but response failed", e);
-                            log.error(request.toString());
-                            log.error(response.toString());
-                        }
+                            }
+                        });
+                    } catch (Throwable e) {
+                        log.error("processRequestWrapper process request over, but response failed", e);
+                        log.error(request.toString());
+                        log.error(response.toString());
                     }
-                } catch (RemotingCommandException e1) {
-                    log.error("excuteRequestWhenWakeup run", e1);
                 }
+            } catch (RemotingCommandException e1) {
+                log.error("excuteRequestWhenWakeup run", e1);
             }
         };
         this.brokerController.getPullMessageExecutor().submit(new RequestTask(run, channel, request));

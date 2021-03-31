@@ -29,6 +29,18 @@ import org.apache.rocketmq.logging.InternalLoggerFactory;
 public class NamesrvConfig {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
+
+    /**
+     * **rocketmqHome：**rocketmq主目录
+     *
+     * **kvConfig：**NameServer存储KV配置属性的持久化路径
+     *
+     * **configStorePath：**nameServer默认配置文件路径
+     *
+     * **orderMessageEnable：**是否支持顺序消息
+     *
+     */
+
     private String rocketmqHome = System.getProperty(MixAll.ROCKETMQ_HOME_PROPERTY, System.getenv(MixAll.ROCKETMQ_HOME_ENV));
     private String kvConfigPath = System.getProperty("user.home") + File.separator + "namesrv" + File.separator + "kvConfig.json";
     private String configStorePath = System.getProperty("user.home") + File.separator + "namesrv" + File.separator + "namesrv.properties";

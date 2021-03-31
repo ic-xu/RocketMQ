@@ -558,7 +558,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         long beginTimestampPrev = beginTimestampFirst;
         long endTimestamp = beginTimestampFirst;
 
-        //查找路由(这里涉及到从服务器获取路由信息)
+        /** 查找路由(这里涉及到从服务器获取路由信息) */
         TopicPublishInfo topicPublishInfo = this.tryToFindTopicPublishInfo(msg.getTopic());
 
         if (topicPublishInfo != null && topicPublishInfo.ok()) {

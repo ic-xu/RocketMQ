@@ -63,7 +63,11 @@ public class MappedFile extends ReferenceResource {
     protected ByteBuffer writeBuffer = null;
 
     protected TransientStorePool transientStorePool = null;
+
+    /** 文件名字 */
     private String fileName;
+
+    /** 存储的第一条消息的偏移量 */
     private long fileFromOffset;
     private File file;
 
